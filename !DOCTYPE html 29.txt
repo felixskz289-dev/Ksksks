@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新HSK教程 · Уроки 1–3 — интерактивный курс</title>
+<style>
+:root{
+  --red:#c0392b; --red2:#e74c3c; --peach:#fdeae0; --peach2:#fbd9c4;
+  --ink:#2c2320; --muted:#8a7a72; --ok:#27ae60; --bad:#e74c3c; --gold:#d4a017;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:"Segoe UI","Noto Sans",Arial,sans-serif; background:#fff7f2; color:var(--ink); line-height:1.55;}
+header{background:linear-gradient(135deg,var(--red),var(--red2)); color:#fff; padding:28px 20px 24px; text-align:center; border-radius:0 0 26px 26px; box-shadow:0 4px 18px rgba(192,57,43,.3);}
+header h1{font-size:1.7rem; letter-spacing:.5px;}
+header p{opacity:.92; margin-top:6px; font-size:.95rem;}
+.badge{display:inline-block; background:rgba(255,255,255,.2); border-radius:999px; padding:3px 14px; margin:4px 4px 0; font-size:.8rem;}
+nav.tabs{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; padding:16px 12px 4px; position:sticky; top:0; background:#fff7f2; z-index:50;}
+nav.tabs button{border:2px solid var(--red); background:#fff; color:var(--red); font-weight:700; padding:10px 18px; border-radius:999px; cursor:pointer; font-size:.92rem; transition:.2s;}
+nav.tabs button.active{background:var(--red); color:#fff; box-shadow:0 3px 10px rgba(192,57,43,.35);}
+main{max-width:980px; margin:0 auto; padding:16px 14px 60px;}
+section.page{display:none; animation:fade .3s;}
+section.page.show{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(8px);} to{opacity:1;}}
+h2.sec{font-size:1.35rem; color:var(--red); margin:22px 0 6px; border-left:6px solid var(--red2); padding-left:10px;}
+h3.sub{font-size:1.05rem; margin:18px 0 8px; color:var(--ink);}
+.note{background:var(--peach); border-radius:14px; padding:12px 16px; margin:10px 0; font-size:.92rem;}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; margin:12px 0;}
+.flip{perspective:900px; height:150px; cursor:pointer;}
+.flip .in{position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d;}
+.flip.flipped .in{transform:rotateY(180deg);}
+.face{position:absolute; inset:0; backface-visibility:hidden; border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:8px; box-shadow:0 3px 10px rgba(0,0,0,.12);}
+.face.front{background:#fff; border:2px solid var(--peach2);}
+.face.front .hz{font-size:2.1rem; font-weight:700;}
+.face.back{background:linear-gradient(135deg,var(--peach),var(--peach2)); transform:rotateY(180deg); text-align:center;}
+.face.back .py{font-size:1.15rem; font-weight:700; color:var(--red);}
+.face.back .tr{font-size:.88rem; margin-top:4px;}
+.speak{position:absolute; top:6px; right:8px; border:none; background:none; font-size:1rem; cursor:pointer; opacity:.7;}
+.speak:hover{opacity:1;}
+.dlg{background:#fff; border:2px solid var(--peach2); border-radius:16px; padding:14px 16px; margin:12px 0;}
+.dlg .line{display:flex; gap:10px; align-items:baseline; padding:5px 0; border-bottom:1px dashed #f0d9cc;}
+.dlg .line:last-child{border-bottom:none;}
+.dlg .who{font-weight:700; color:var(--red); white-space:nowrap; font-size:.9rem;}
+.dlg .hz{font-size:1.25rem;}
+.dlg .py{color:var(--muted); font-size:.9rem;}
+.dlg .tr{font-size:.85rem; color:#6b5d55; font-style:italic;}
+.togglebar{margin:8px 0;}
+.togglebar button{border:1px solid var(--red); color:var(--red); background:#fff; border-radius:8px; padding:4px 12px; margin-right:6px; cursor:pointer; font-size:.8rem;}
+.hidden{display:none !important;}
+.trainer{background:#fff; border-radius:18px; border:2px solid var(--peach2); padding:18px; margin:18px 0; box-shadow:0 4px 14px rgba(0,0,0,.06);}
+.scorebar{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;}
+.score{font-weight:700; color:var(--gold); font-size:1.1rem;}
+.btn{background:var(--red); color:#fff; border:none; padding:10px 20px; border-radius:12px; font-weight:700; cursor:pointer; font-size:.95rem; transition:.15s;}
+.btn:hover{background:var(--red2); transform:translateY(-1px);}
+.btn.ghost{background:#fff; color:var(--red); border:2px solid var(--red);}
+.btn.ghost:hover{background:var(--peach);}
+.q-hz{font-size:2.6rem; text-align:center; margin:10px 0 4px; font-weight:700;}
+.q-py{text-align:center; color:var(--muted); font-size:1.15rem; margin-bottom:14px;}
+.opts{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+@media(max-width:560px){.opts{grid-template-columns:1fr;}}
+.opt{border:2px solid var(--peach2); background:#fff; border-radius:12px; padding:12px; cursor:pointer; font-size:1rem; text-align:left; transition:.15s;}
+.opt:hover{border-color:var(--red); background:var(--peach);}
+.opt.ok{border-color:var(--ok); background:#eafaf1;}
+.opt.bad{border-color:var(--bad); background:#fdedec;}
+.opt:disabled{cursor:default;}
+.feedback{text-align:center; min-height:26px; margin-top:10px; font-weight:700;}
+.feedback.ok{color:var(--ok);} .feedback.bad{color:var(--bad);}
+.match-wrap{display:flex; gap:18px; flex-wrap:wrap;}
+.mcol{flex:1; min-width:200px;}
+.mitem{border:2px solid var(--peach2); border-radius:12px; padding:10px 12px; margin:8px 0; cursor:pointer; background:#fff; font-size:1.15rem; text-align:center; transition:.15s;}
+.mitem:hover{border-color:var(--red);}
+.mitem.sel{border-color:var(--red); background:var(--peach); box-shadow:0 0 0 3px rgba(231,76,60,.2);}
+.mitem.done{opacity:.45; pointer-events:none; text-decoration:line-through; border-color:var(--ok);}
+.builder-chips{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0;}
+.chip{border:2px solid var(--red); background:#fff; color:var(--red); border-radius:999px; padding:8px 16px; cursor:pointer; font-size:1.15rem; font-weight:700; transition:.15s;}
+.chip:hover{background:var(--peach);}
+.chip.used{opacity:.25; pointer-events:none;}
+.slotbar{min-height:56px; border:2px dashed var(--peach2); border-radius:12px; padding:8px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; background:#fffdf9;}
+.slot-chip{border:2px solid var(--ok); color:#1d7a43; background:#eafaf1; border-radius:999px; padding:8px 16px; font-size:1.15rem; font-weight:700; cursor:pointer;}
+.fill-line{font-size:1.3rem; margin:10px 0; display:flex; flex-wrap:wrap; align-items:center; gap:6px;}
+.fill-line select{font-size:1.2rem; padding:4px 8px; border:2px solid var(--red); border-radius:10px; background:#fff; color:var(--red); font-weight:700; cursor:pointer;}
+footer{text-align:center; color:var(--muted); font-size:.8rem; padding:20px;}
+.gram{background:linear-gradient(135deg,#fff,var(--peach)); border:2px solid var(--peach2); border-radius:16px; padding:14px 16px; margin:12px 0;}
+.gram b{color:var(--red);}
+ul.lesson-list{list-style:none;}
+ul.lesson-list li{background:#fff; border:2px solid var(--peach2); border-radius:12px; padding:10px 14px; margin:8px 0; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
+ul.lesson-list .hz{font-size:1.4rem; font-weight:700;}
+ul.lesson-list .py{color:var(--muted);}
+ul.lesson-list .tr{font-size:.9rem;}
+.word-tag{font-size:.7rem; background:var(--peach2); color:var(--red); border-radius:6px; padding:2px 8px; font-weight:700;}
+</style>
+</head>
+<body>
+<header>
+  <h1>新HSK教程 · 你好！</h1>
+  <p>Интерактивный курс по урокам 1–3</p>
+  <span class="badge">🆕 Урок 3 — новый материал</span>
+  <span class="badge">📚 Уроки 1–2 — закрепление</span>
+</header>
+
+<nav class="tabs">
+  <button data-tab="new" class="active">🆕 Урок 3 · 我是中国人</button>
+  <button data-tab="review">📚 Повторение · Уроки 1–2</button>
+  <button data-tab="quiz">🎯 Тренажёры</button>
+</nav>
+
+<main>
+<!-- ==================== УРОК 3 — НОВЫЙ МАТЕРИАЛ ==================== -->
+<section class="page show" id="page-new">
+  <h2 class="sec">Урок 3 · 我是中国人 — «Я китаец»</h2>
+  <div class="note">📌 <b>Тема:</b> национальность и страны. Ключевая фраза: <b>我是 + страна + 人</b> — «я … (национальность)». Нажимайте на карточки, чтобы перевернуть, и на 🔊, чтобы услышать произношение.</div>
+
+  <h3 class="sub">📝 生词 Новые слова</h3>
+  <div class="grid" id="cardsNew"></div>
+
+  <h3 class="sub">🧩 Грамматика</h3>
+  <div class="gram">
+    <p><b>1. 的 (de)</b> — показатель родительного падежа: <b>我的中文老师</b> — «мой учитель китайского». Структура: <i>прилагательное/местоимение + 的 + существительное</i>.</p>
+    <p><b>2. 哪国人 (nǎ guó rén)</b> — «гражданин какой страны?»: <b>你女朋友是哪国人？</b> — «Твоя девушка из какой страны?»</p>
+    <p><b>3. 也 (yě)</b> — «тоже»: <b>她也是泰国人。</b> — «Она тоже таиландка».</p>
+    <p><b>4. 这 (zhè)</b> — «это» + 是: <b>这是谁？</b> — «Кто это?». Ответ: <b>这是我女朋友。</b></p>
+    <p><b>5. Китайские имена</b>: фамилия + имя (姓 + 名), например 李文 = Ли (фамилия) + Вэнь (имя).</p>
+  </div>
+
+  <h3 class="sub">💬 朗读对话 Диалоги</h3>
+  <div class="togglebar"><button onclick="toggleDlg('d31')">Показать/скрыть пиньинь</button><button onclick="toggleDlgTr('d31')">Показать/скрыть перевод</button></div>
+  <div class="dlg" id="d31">
+    <div class="line"><span class="who">李文 Lǐ Wén</span><span><span class="hz">我是中国人。</span><br><span class="py">Wǒ shì Zhōngguó rén.</span><br><span class="tr">Я китаец.</span> <button class="speak" onclick="speak('我是中国人。',event)">🔊</button></span></div>
+    <div class="line"><span class="who">白家月 Bái Jiāyuè</span><span><span class="hz">我是法国人。我的中文老师也是中国人。</span><br><span class="py">Wǒ shì Fǎguó rén. Wǒ de Zhōngwén lǎoshī yě shì Zhōngguó rén.</span><br><span class="tr">Я француженка. Мой учитель китайского тоже китаец.</span> <button class="speak" onclick="speak('我是法国人。我的中文老师也是中国人。',event)">🔊</button></span></div>
+  </div>
+
+  <div class="togglebar"><button onclick="toggleDlg('d33')">Показать/скрыть пиньинь</button><button onclick="toggleDlgTr('d33')">Показать/скрыть перевод</button></div>
+  <div class="dlg" id="d33">
+    <div class="line"><span class="who">安妮 Ānnī</span><span><span class="hz">这是谁？</span><br><span class="py">Zhè shì shéi?</span><br><span class="tr">Кто это?</span> <button class="speak" onclick="speak('这是谁？',event)">🔊</button></span></div>
+    <div class="line"><span class="who">陈天中 Chén Tiānzhōng</span><span><span class="hz">这是我女朋友。</span><br><span class="py">Zhè shì wǒ nǚpéngyou.</span><br><span class="tr">Это моя девушка.</span> <button class="speak" onclick="speak('这是我女朋友。',event)">🔊</button></span></div>
+    <div class="line"><span class="who">安妮 Ānnī</span><span><span class="hz">你女朋友是哪国人？</span><br><span class="py">Nǐ nǚpéngyou shì nǎ guó rén?</span><br><span class="tr">Твоя девушка из какой страны?</span> <button class="speak" onclick="speak('你女朋友是哪国人？',event)">🔊</button></span></div>
+    <div class="line"><span class="who">陈天中 Chén Tiānzhōng</span><span><span class="hz">她也是泰国人。</span><br><span class="py">Tā yě shì Tàiguó rén.</span><br><span class="tr">Она тоже таиландка.</span> <button class="speak" onclick="speak('她也是泰国人。',event)">🔊</button></span></div>
+  </div>
+  <div class="note">💡 <b>小语助力:</b> «谁» можно читать и <b>shéi</b>, и <b>shuí</b> — оба варианта правильные. В разговорной речи чаще звучит shéi.</div>
+</section>
+
+<!-- ==================== ПОВТОРЕНИЕ УРОКОВ 1–2 ==================== -->
+<section class="page" id="page-review">
+  <h2 class="sec">📚 Повторение · Уроки 1–2</h2>
+  <div class="note">Темы: приветствие (你好), представление (我叫… / 你叫什么名字), извинения (对不起 — 没关系), благодарность (谢谢 — 不客气), прощание (再见).</div>
+
+  <h3 class="sub">Урок 1 · 大家好</h3>
+  <ul class="lesson-list" id="rev1"></ul>
+
+  <h3 class="sub">Урок 2 · 我叫李文</h3>
+  <ul class="lesson-list" id="rev2"></ul>
+
+  <h3 class="sub">💬 Диалоги для повторения</h3>
+  <div class="togglebar"><button onclick="toggleDlg('dr1')">Показать/скрыть пиньинь</button><button onclick="toggleDlgTr('dr1')">Показать/скрыть перевод</button></div>
+  <div class="dlg" id="dr1">
+    <div class="line"><span class="who">王一飞</span><span><span class="hz">大家好！</span><br><span class="py">Dàjiā hǎo!</span><br><span class="tr">Всем привет!</span> <button class="speak" onclick="speak('大家好！',event)">🔊</button></span></div>
+    <div class="line"><span class="who">学生们</span><span><span class="hz">老师，您好！</span><br><span class="py">Lǎoshī, nín hǎo!</span><br><span class="tr">Здравствуйте, учитель!</span> <button class="speak" onclick="speak('老师，您好！',event)">🔊</button></span></div>
+    <div class="line"><span class="who">小语</span><span><span class="hz">你们好！</span><br><span class="py">Nǐmen hǎo!</span><br><span class="tr">Привет, все!</span> <button class="speak" onclick="speak('你们好！',event)">🔊</button></span></div>
+    <div class="line"><span class="who">学生们</span><span><span class="hz">你好，小语！</span><br><span class="py">Nǐ hǎo, Xiǎoyǔ!</span><br><span class="tr">Привет, Сяоюй!</span> <button class="speak" onclick="speak('你好，小语！',event)">🔊</button></span></div>
+  </div>
+
+  <div class="togglebar"><button onclick="toggleDlg('dr2')">Показать/скрыть пиньинь</button><button onclick="toggleDlgTr('dr2')">Показать/скрыть перевод</button></div>
+  <div class="dlg" id="dr2">
+    <div class="line"><span class="who">李文</span><span><span class="hz">你好！我叫李文。</span><br><span class="py">Nǐ hǎo! Wǒ jiào Lǐ Wén.</span><br><span class="tr">Привет! Меня зовут Ли Вэнь.</span> <button class="speak" onclick="speak('你好！我叫李文。',event)">🔊</button></span></div>
+    <div class="line"><span class="who">白家月</span><span><span class="hz">你好！我叫白家月。</span><br><span class="py">Nǐ hǎo! Wǒ jiào Bái Jiāyuè.</span><br><span class="tr">Привет! Меня зовут Бай Цзяюэ.</span> <button class="speak" onclick="speak('你好！我叫白家月。',event)">🔊</button></span></div>
+    <div class="line"><span class="who">李文</span><span><span class="hz">很高兴认识你。</span><br><span class="py">Hěn gāoxìng rènshi nǐ.</span><br><span class="tr">Рад познакомиться с тобой.</span> <button class="speak" onclick="speak('很高兴认识你。',event)">🔊</button></span></div>
+    <div class="line"><span class="who">白家月</span><span><span class="hz">认识你我也很高兴。</span><br><span class="py">Rènshi nǐ wǒ yě hěn gāoxìng.</span><br><span class="tr">Я тоже рада познакомиться с тобой.</span> <button class="speak" onclick="speak('认识你我也很高兴。',event)">🔊</button></span></div>
+  </div>
+
+  <div class="togglebar"><button onclick="toggleDlg('dr3')">Показать/скрыть пиньинь</button><button onclick="toggleDlgTr('dr3')">Показать/скрыть перевод</button></div>
+  <div class="dlg" id="dr3">
+    <div class="line"><span class="who">陈天中</span><span><span class="hz">你好，陈天中！… 对不起！</span><br><span class="py">Nǐ hǎo, Chén Tiānzhōng! … Duìbuqǐ!</span><br><span class="tr">Привет, Чэнь Тяньчжун! … Извини!</span> <button class="speak" onclick="speak('你好，陈天中！对不起！',event)">🔊</button></span></div>
+    <div class="line"><span class="who">白家月</span><span><span class="hz">不是安妮，我是白家月。没关系！</span><br><span class="py">Bú shì Ānnī, wǒ shì Bái Jiāyuè. Méi guānxi!</span><br><span class="tr">Я не Энни, я Бай Цзяюэ. Ничего страшного!</span> <button class="speak" onclick="speak('不是安妮，我是白家月。没关系！',event)">🔊</button></span></div>
+  </div>
+
+  <div class="togglebar"><button onclick="toggleDlg('dr4')">Показать/скрыть пиньинь</button><button onclick="toggleDlgTr('dr4')">Показать/скрыть перевод</button></div>
+  <div class="dlg" id="dr4">
+    <div class="line"><span class="who">学生们</span><span><span class="hz">谢谢！老师，再见！</span><br><span class="py">Xièxie! Lǎoshī, zàijiàn!</span><br><span class="tr">Спасибо! До свидания, учитель!</span> <button class="speak" onclick="speak('谢谢！老师，再见！',event)">🔊</button></span></div>
+    <div class="line"><span class="who">小语 / 王一飞</span><span><span class="hz">不客气！同学们，再见！</span><br><span class="py">Bú kèqi! Tóngxuémen, zàijiàn!</span><br><span class="tr">Не за что! До свидания, одноклассники!</span> <button class="speak" onclick="speak('不客气！同学们，再见！',event)">🔊</button></span></div>
+  </div>
+  <div class="note">💡 <b>小语助力:</b> в разговорной речи «没关系» часто заменяют на <b>没事</b> — «да неважно, всё в порядке».</div>
+</section>
+
+<!-- ==================== ТРЕНАЖЁРЫ ==================== -->
+<section class="page" id="page-quiz">
+  <h2 class="sec">🎯 Тренажёры</h2>
+
+  <div class="trainer" id="tr-quiz">
+    <h3 class="sub">1️⃣ Викторина: что означает слово?</h3>
+    <div class="scorebar"><span class="score" id="quizScore">Вопрос 1 из 10</span><span class="score" id="quizPts">Очки: 0</span></div>
+    <div id="quizBox"></div>
+    <div class="feedback" id="quizFb"></div>
+    <div style="text-align:center; margin-top:10px;"><button class="btn ghost" onclick="startQuiz()">🔄 Начать заново</button></div>
+  </div>
+
+  <div class="trainer">
+    <h3 class="sub">2️⃣ Игра «Найди пару»: иероглиф ⇄ пиньинь</h3>
+    <div class="scorebar"><span class="score" id="matchScore">Совпадений: 0 / 8</span><span><button class="btn ghost" onclick="startMatch()">🔄 Новая игра</button></span></div>
+    <div class="match-wrap"><div class="mcol" id="matchL"></div><div class="mcol" id="matchR"></div></div>
+    <div class="feedback" id="matchFb"></div>
+  </div>
+
+  <div class="trainer">
+    <h3 class="sub">3️⃣ Собери предложение</h3>
+    <div class="scorebar"><span class="score" id="buildScore"></span><span><button class="btn ghost" onclick="startBuilder()">🔄 Другое предложение</button></span></div>
+    <div class="slotbar" id="slotBar"></div>
+    <div class="builder-chips" id="chipBar"></div>
+    <div style="text-align:center;"><button class="btn" onclick="checkBuild()">Проверить</button></div>
+    <div class="feedback" id="buildFb"></div>
+  </div>
+
+  <div class="trainer">
+    <h3 class="sub">4️⃣ Вставь слово в диалог (Урок 3)</h3>
+    <div id="fillBox"></div>
+    <div style="text-align:center;"><button class="btn" onclick="checkFill()">Проверить</button></div>
+    <div class="feedback" id="fillFb"></div>
+  </div>
+
+  <div class="trainer">
+    <h3 class="sub">5️⃣ Итоговый тест · 10 вопросов (уроки 1–3)</h3>
+    <div class="scorebar"><span class="score" id="finalScore"></span></div>
+    <div id="finalBox"><button class="btn" onclick="startFinal()">▶ Начать итоговый тест</button></div>
+  </div>
+</section>
+</main>
+<footer>新HSK教程 1·2 · Уроки 1–3 · Сделано для закрепления иероглифов 🇷🇺🇨🇳</footer>
+
+<script>
+/* ---------- DATA ---------- */
+const NEW_WORDS = [
+ {hz:"人",py:"rén",tr:"человек"},
+ {hz:"的",py:"de",tr:"показатель род. падежа"},
+ {hz:"这",py:"zhè",tr:"это"},
+ {hz:"谁",py:"shéi / shuí",tr:"кто"},
+ {hz:"女朋友",py:"nǚpéngyou",tr:"девушка"},
+ {hz:"哪",py:"nǎ",tr:"который, какой"},
+ {hz:"国",py:"guó",tr:"страна"},
+ {hz:"她",py:"tā",tr:"она, её"},
+ {hz:"中国",py:"Zhōngguó",tr:"Китай",tag:"имя собств."},
+ {hz:"法国",py:"Fǎguó",tr:"Франция",tag:"имя собств."},
+ {hz:"中文",py:"Zhōngwén",tr:"китайский язык",tag:"имя собств."},
+ {hz:"泰国",py:"Tàiguó",tr:"Таиланд",tag:"имя собств."}
+];
+const REV1 = [
+ {hz:"你好",py:"nǐ hǎo",tr:"привет"},
+ {hz:"王老师",py:"Wáng lǎoshī",tr:"учитель Ван (г-жа Ван)",tag:"имя собств."},
+ {hz:"大家",py:"dàjiā",tr:"все"},
+ {hz:"好",py:"hǎo",tr:"хороший"},
+ {hz:"学生",py:"xuéshēng",tr:"студент, ученик"},
+ {hz:"们",py:"men",tr:"суффикс мн. числа"},
+ {hz:"老师",py:"lǎoshī",tr:"учитель"},
+ {hz:"您",py:"nín",tr:"Вы (вежл.)"},
+ {hz:"你们",py:"nǐmen",tr:"вы (мн.ч.)"},
+ {hz:"谢谢",py:"xièxie",tr:"спасибо"},
+ {hz:"不客气",py:"bú kèqi",tr:"не за что"},
+ {hz:"同学",py:"tóngxué",tr:"одноклассник"},
+ {hz:"再见",py:"zàijiàn",tr:"до свидания"}
+];
+const REV2 = [
+ {hz:"请问",py:"qǐngwèn",tr:"скажите, пожалуйста (вежл. вопрос)"},
+ {hz:"你",py:"nǐ",tr:"ты"},
+ {hz:"叫",py:"jiào",tr:"называться"},
+ {hz:"什么",py:"shénme",tr:"что"},
+ {hz:"名字",py:"míngzi",tr:"имя"},
+ {hz:"我",py:"wǒ",tr:"я"},
+ {hz:"不",py:"bù",tr:"не"},
+ {hz:"是",py:"shì",tr:"быть"},
+ {hz:"对不起",py:"duìbuqǐ",tr:"извини(те)"},
+ {hz:"没关系",py:"méi guānxi",tr:"ничего страшного"},
+ {hz:"没事",py:"méishì",tr:"неважно, всё в порядке"},
+ {hz:"很",py:"hěn",tr:"очень"},
+ {hz:"高兴",py:"gāoxìng",tr:"рад, довольный"},
+ {hz:"认识",py:"rènshi",tr:"знать, знакомиться"},
+ {hz:"也",py:"yě",tr:"тоже"}
+];
+const ALL = NEW_WORDS.concat(REV1).concat(REV2);
+
+const SENTENCES = [
+ {ans:["你","叫","什么","名字"],py:"Nǐ jiào shénme míngzi?",tr:"Как тебя зовут?"},
+ {ans:["很","高兴","认识","你"],py:"Hěn gāoxìng rènshi nǐ.",tr:"Рад познакомиться."},
+ {ans:["这","是","谁"],py:"Zhè shì shéi?",tr:"Кто это?"},
+ {ans:["她","也","是","泰国","人"],py:"Tā yě shì Tàiguó rén.",tr:"Она тоже таиландка."},
+ {ans:["我","是","中国","人"],py:"Wǒ shì Zhōngguó rén.",tr:"Я китаец."},
+ {ans:["你","女朋友","是","哪国","人"],py:"Nǐ nǚpéngyou shì nǎ guó rén?",tr:"Твоя девушка из какой страны?"},
+ {ans:["老师","，","再见"],py:"Lǎoshī, zàijiàn!",tr:"До свидания, учитель!"},
+ {ans:["谢谢","，","不客气"],py:"Xièxie — bú kèqi.",tr:"Спасибо — не за что."}
+];
+
+const FILL = [
+ {before:"安妮：这是",after:"？",opts:["谁","哪","她"],ans:0},
+ {before:"陈天中：这是我",after:"。",opts:["同学","女朋友","老师"],ans:1},
+ {before:"安妮：你女朋友是",after:"国人？",opts:["这","很","哪"],ans:2},
+ {before:"陈天中：她",after:"是泰国人。",opts:["也","不","很"],ans:0},
+ {before:"白家月：我",after:"法国人。",opts:["叫","是","好"],ans:1}
+];
+
+/* ---------- SPEECH ---------- */
+function speak(text, ev){
+  if(ev){ev.stopPropagation();}
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang="zh-CN"; u.rate=0.85;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ---------- TABS ---------- */
+document.querySelectorAll("nav.tabs button").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll("nav.tabs button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    document.querySelectorAll("section.page").forEach(p=>p.classList.remove("show"));
+    document.getElementById("page-"+b.dataset.tab).classList.add("show");
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+});
+
+/* ---------- FLASHCARDS ---------- */
+function renderCards(el, arr){
+  el.innerHTML = arr.map((w,i)=>`
+    <div class="flip" onclick="this.classList.toggle('flipped')">
+      <div class="in">
+        <div class="face front"><span class="hz">${w.hz}</span>${w.tag?`<span class="word-tag">${w.tag}</span>`:""}<button class="speak" onclick="speak('${w.hz}',event)">🔊</button></div>
+        <div class="face back"><span class="py">${w.py}</span><span class="tr">${w.tr}</span></div>
+      </div>
+    </div>`).join("");
+}
+renderCards(document.getElementById("cardsNew"), NEW_WORDS);
+
+function renderRev(el, arr){
+  el.innerHTML = arr.map(w=>`
+    <li><span class="hz">${w.hz} ${w.tag?`<span class="word-tag">${w.tag}</span>`:""}</span>
+    <span class="py">${w.py}</span><span class="tr">${w.tr}</span>
+    <button class="btn ghost" style="padding:4px 12px;font-size:.8rem;" onclick="speak('${w.hz}')">🔊</button></li>`).join("");
+}
+renderRev(document.getElementById("rev1"), REV1);
+renderRev(document.getElementById("rev2"), REV2);
+
+/* ---------- DIALOG TOGGLES ---------- */
+let pyOn=false, trOn=false;
+function toggleDlg(id){pyOn=!pyOn; document.querySelectorAll("#"+id+" .py").forEach(e=>e.classList.toggle("hidden",!pyOn));}
+function toggleDlgTr(id){trOn=!trOn; document.querySelectorAll("#"+id+" .tr").forEach(e=>e.classList.toggle("hidden",!trOn));}
+document.querySelectorAll(".dlg .py, .dlg .tr").forEach(e=>e.classList.add("hidden"));
+
+/* ---------- QUIZ ---------- */
+let qList=[], qIdx=0, qPts=0;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startQuiz(){
+  qList = shuffle(ALL.slice()).slice(0,10);
+  qIdx=0; qPts=0;
+  document.getElementById("quizPts").textContent="Очки: 0";
+  nextQ();
+}
+function nextQ(){
+  if(qIdx>=qList.length){
+    document.getElementById("quizScore").textContent="Готово!";
+    document.getElementById("quizBox").innerHTML=`<div style="text-align:center;padding:20px;font-size:1.2rem;">🏆 Результат: <b>${qPts} / ${qList.length}</b><br><span style="color:var(--muted);font-size:.9rem;">${qPts>=8?"Отлично! Иероглифы закреплены. 💪":qPts>=5?"Неплохо! Повтори карточки и попробуй ещё. 📚":"Стоит ещё потренироваться — загляни в разделы уроков. 🔄"}</span></div>`;
+    document.getElementById("quizFb").textContent="";
+    return;
+  }
+  const w=qList[qIdx];
+  const opts=shuffle([w].concat(shuffle(ALL.filter(x=>x!==w)).slice(0,3)));
+  document.getElementById("quizScore").textContent=`Вопрос ${qIdx+1} из ${qList.length}`;
+  document.getElementById("quizFb").textContent="";
+  document.getElementById("quizFb").className="feedback";
+  document.getElementById("quizBox").innerHTML=`
+    <div class="q-hz">${w.hz} <button class="speak" style="position:static;" onclick="speak('${w.hz}')">🔊</button></div>
+    <div class="opts">${opts.map((o,i)=>`<button class="opt" onclick="answerQ(this,${i},${qIdx})"><b style="color:var(--red);">${o.py}</b> — ${o.tr}</button>`).join("")}</div>`;
+  window._opts=opts;
+}
+function answerQ(btn,i,qi){
+  if(qi!==qIdx) return;
+  const w=qList[qIdx];
+  const btns=document.querySelectorAll("#quizBox .opt");
+  btns.forEach(b=>b.disabled=true);
+  if(window._opts[i]===w){
+    btn.classList.add("ok"); qPts++;
+    document.getElementById("quizFb").textContent="✅ Верно!"; document.getElementById("quizFb").className="feedback ok";
+  }else{
+    btn.classList.add("bad");
+    btns[[...btns].findIndex(b=>window._opts[[...btns].indexOf(b)]===w)]?.classList.add("ok");
+    window._opts.forEach((o,j)=>{if(o===w) btns[j].classList.add("ok");});
+    document.getElementById("quizFb").textContent=`❌ Правильный ответ: ${w.py} — ${w.tr}`; document.getElementById("quizFb").className="feedback bad";
+  }
+  document.getElementById("quizPts").textContent="Очки: "+qPts;
+  qIdx++;
+  setTimeout(nextQ, 1600);
+}
+startQuiz();
+
+/* ---------- MATCHING ---------- */
+let mPairs=[], mSelL=null, mSelR=null, mDone=0;
+function startMatch(){
+  mPairs = shuffle(ALL.slice()).slice(0,8);
+  mSelL=null; mSelR=null; mDone=0;
+  document.getElementById("matchScore").textContent="Совпадений: 0 / 8";
+  document.getElementById("matchFb").textContent="";
+  const L=shuffle(mPairs.map((w,i)=>({t:w.hz,i})));
+  const R=shuffle(mPairs.map((w,i)=>({t:w.py,i})));
+  document.getElementById("matchL").innerHTML=L.map(x=>`<div class="mitem" data-i="${x.i}" onclick="mPick(this,'L')">${x.t}</div>`).join("");
+  document.getElementById("matchR").innerHTML=R.map(x=>`<div class="mitem" data-i="${x.i}" onclick="mPick(this,'R')">${x.t}</div>`).join("");
+}
+function mPick(el,side){
+  if(el.classList.contains("done")) return;
+  const prev = side==="L" ? mSelL : mSelR;
+  if(prev) prev.classList.remove("sel");
+  el.classList.add("sel");
+  if(side==="L") mSelL=el; else mSelR=el;
+  if(mSelL && mSelR){
+    if(mSelL.dataset.i===mSelR.dataset.i){
+      mSelL.classList.add("done"); mSelR.classList.add("done");
+      mDone++;
+      document.getElementById("matchScore").textContent=`Совпадений: ${mDone} / 8`;
+      document.getElementById("matchFb").textContent="✅ Пара найдена!"; document.getElementById("matchFb").className="feedback ok";
+      if(mDone===8){document.getElementById("matchFb").textContent="🏆 Все пары найдены!"; speak("很好！");}
+    }else{
+      document.getElementById("matchFb").textContent="❌ Не совпадает, попробуйте ещё."; document.getElementById("matchFb").className="feedback bad";
+    }
+    mSelL.classList.remove("sel"); mSelR.classList.remove("sel");
+    mSelL=null; mSelR=null;
+  }
+}
+startMatch();
+
+/* ---------- SENTENCE BUILDER ---------- */
+let curSent=null, picked=[];
+function startBuilder(){
+  curSent = SENTENCES[Math.floor(Math.random()*SENTENCES.length)];
+  picked=[];
+  document.getElementById("buildFb").textContent="";
+  document.getElementById("buildScore").textContent="Собери: «"+curSent.tr+"»";
+  const chips = shuffle(curSent.ans.map((t,i)=>({t,i})));
+  document.getElementById("chipBar").innerHTML = chips.map((c,idx)=>`<button class="chip" id="chip${idx}" data-t="${c.t.replace(/"/g,"&quot;")}" onclick="pickChip(${idx})">${c.t}</button>`).join("");
+  renderSlots();
+}
+function pickChip(idx){
+  const el=document.getElementById("chip"+idx);
+  if(el.classList.contains("used")) return;
+  el.classList.add("used");
+  picked.push({t:el.dataset.t, idx});
+  renderSlots();
+}
+function renderSlots(){
+  const bar=document.getElementById("slotBar");
+  if(picked.length===0){bar.innerHTML='<span style="color:var(--muted);font-size:.9rem;">Нажимайте на слова ниже, чтобы собрать предложение…</span>';return;}
+  bar.innerHTML = picked.map((p,k)=>`<span class="slot-chip" onclick="unpick(${k})">${p.t}</span>`).join("");
+}
+function unpick(k){
+  const p=picked.splice(k,1)[0];
+  document.getElementById("chip"+p.idx).classList.remove("used");
+  renderSlots();
+  document.getElementById("buildFb").textContent="";
+}
+function checkBuild(){
+  if(!curSent) return;
+  const got=picked.map(p=>p.t).join("|");
+  const want=curSent.ans.join("|");
+  const fb=document.getElementById("buildFb");
+  if(got===want){
+    fb.textContent=`✅ Верно! ${curSent.py}`; fb.className="feedback ok"; speak(curSent.ans.join(""));
+  }else{
+    fb.textContent=`❌ Пока не так. Подсказка: ${curSent.py}`; fb.className="feedback bad";
+  }
+}
+startBuilder();
+
+/* ---------- FILL DIALOG ---------- */
+function renderFill(){
+  document.getElementById("fillBox").innerHTML = FILL.map((f,i)=>`
+    <div class="fill-line"><span>${f.before}</span>
+    <select id="fill${i}">${f.opts.map((o,j)=>`<option value="${j}">${o}</option>`).join("")}</select>
+    <span>${f.after}</span>
+    <button class="speak" style="position:static;" onclick="speak('${f.before}${f.opts[f.ans]}${f.after}')">🔊</button></div>`).join("");
+  document.getElementById("fillFb").textContent="";
+}
+function checkFill(){
+  let ok=0, total=FILL.length;
+  FILL.forEach((f,i)=>{
+    const sel=document.getElementById("fill"+i);
+    sel.style.borderColor = (+sel.value===f.ans) ? "var(--ok)" : "var(--bad)";
+    if(+sel.value===f.ans) ok++;
+  });
+  const fb=document.getElementById("fillFb");
+  fb.textContent = ok===total ? "🏆 Отлично! Все пропуски верны." : `Верно ${ok} из ${total}. Исправь выделенные поля.`;
+  fb.className = "feedback " + (ok===total?"ok":"bad");
+}
+renderFill();
+
+/* ---------- FINAL TEST ---------- */
+let fList=[], fIdx=0, fPts=0;
+function startFinal(){
+  fList=shuffle(ALL.slice()); fIdx=0; fPts=0;
+  nextFinal();
+}
+function nextFinal(){
+  const box=document.getElementById("finalBox");
+  if(fIdx>=10){
+    const pct=fPts*10;
+    box.innerHTML=`<div style="text-align:center;padding:24px;font-size:1.25rem;">🏆 Итог: <b>${fPts} / 10</b><br><span style="color:var(--muted);">${pct>=90?"Невероятно! Ты готов(а) к уроку 4. 🚀":pct>=70?"Хороший результат! Ещё немного практики. 💪":pct>=50?"Неплохо, но стоит повторить карточки. 📚":"Вернись к карточкам и диалогам, затем попробуй снова. 🔄"}</span><br><br><button class="btn ghost" onclick="startFinal()">🔄 Пройти ещё раз</button></div>`;
+    document.getElementById("finalScore").textContent="Финиш!";
+    return;
+  }
+  const mode = Math.random()<0.5 ? "h2t" : "t2h";
+  const w=fList[fIdx];
+  const opts=shuffle([w].concat(shuffle(ALL.filter(x=>x!==w)).slice(0,3)));
+  document.getElementById("finalScore").textContent=`Вопрос ${fIdx+1} из 10 · Очки: ${fPts}`;
+  if(mode==="h2t"){
+    box.innerHTML=`<div class="q-hz">${w.hz}</div><div class="q-py">Выбери перевод</div>
+    <div class="opts">${opts.map((o,i)=>`<button class="opt" onclick="answerF(this,${i})">${o.tr}</button>`).join("")}</div>
+    <div class="feedback" id="fFb"></div>`;
+  }else{
+    box.innerHTML=`<div class="q-hz" style="font-size:1.6rem;">${w.tr} <span style="color:var(--muted);font-size:1rem;">(${w.py})</span></div><div class="q-py">Выбери иероглиф</div>
+    <div class="opts">${opts.map((o,i)=>`<button class="opt" style="font-size:1.4rem;" onclick="answerF(this,${i})">${o.hz}</button>`).join("")}</div>
+    <div class="feedback" id="fFb"></div>`;
+  }
+  window._fOpts=opts; window._fW=w; window._fMode=mode;
+}
+function answerF(btn,i){
+  const btns=document.querySelectorAll("#finalBox .opt");
+  btns.forEach(b=>b.disabled=true);
+  const fb=document.getElementById("fFb");
+  if(window._fOpts[i]===window._fW){
+    btn.classList.add("ok"); fPts++;
+    fb.textContent="✅ Верно!"; fb.className="feedback ok";
+  }else{
+    btn.classList.add("bad");
+    window._fOpts.forEach((o,j)=>{if(o===window._fW) btns[j].classList.add("ok");});
+    fb.textContent=`❌ Правильно: ${window._fW.hz} — ${window._fW.tr}`; fb.className="feedback bad";
+  }
+  fIdx++;
+  setTimeout(nextFinal,1500);
+}
+</script>
+</body>
+</html>
